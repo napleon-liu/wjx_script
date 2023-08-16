@@ -46,10 +46,10 @@ def auto_choose():
     browser.execute_cdp_cmd('Page.addScriptToEvaluateOnNewDocument',
                             {'source': 'Object.defineProperty(navigator, "webdriver", {get: () => undefined})'})
     browser.get(base_url)
-    time.sleep(1)
+    time.sleep(2)
     problems = [
         # 题目类型 题目编号 选项数量 各选项权重 
-        [3, 1, 3, [5, 5,5]],
+        [3, 1, 3, [5, 5,1]],
         [3, 2, 5, [1, 28, 5, 1, 0]],
         [3, 3, 4, [1, 2, 9, 21]],
         [3, 4, 5, [4, 7, 5,7,5]],
@@ -67,19 +67,33 @@ def auto_choose():
     ]
     for p in problems:
         choose_click(browser, p[0],p[1],p[2],p[3])
-        time.sleep(0.5)
+        # time.sleep(2)
     # 提交按钮
     submit = browser.find_element('xpath', '//*[@id="ctlNext"]')
     submit.click()
     time.sleep(1)
-    # 滑动验证码
+    try:
+        comfirm=browser.find_element('xpath','//*[@id="layui-layer1"]/div[3]/a')
+        comfirm.click()
+        time.sleep(0.5)
+    except:
+        pass
+
+    try:
+        button=browser.find_element('xpath','//*[@id="rectMask"]')
+        button.click()
+        time.sleep(5)
+    except:
+        pass
+        
     try:
         slider = browser.find_element('xpath', '//*[@id="nc_1__scale_text"]/span')
         if str(slider.text).startswith("请按住滑块"):
             width = slider.size.get('width')
             ActionChains(browser).drag_and_drop_by_offset(slider, width, 0).perform()
-    except Exception as e :
-        print(e)
+            time.sleep(2)
+    except :
+        pass
     browser.quit()
 
 if __name__ == '__main__':
@@ -89,6 +103,7 @@ if __name__ == '__main__':
             print(f'已提交{i}次问卷')
         except Exception as e:
             print(e)
+        # time.sleep(10)
 
 
 
