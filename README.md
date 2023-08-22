@@ -10,6 +10,7 @@
 # 使用说明
 >
 >1.确保目录下的chromedriver.exe版本和chrome浏览器版本一致（或相差一个版本）。
+当前驱动版本:116
 >[驱动下载地址](https://registry.npmmirror.com/binary.html?path=chromedriver/)
 >
 >2.修改config.py里的参数。

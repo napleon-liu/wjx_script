@@ -1,4 +1,4 @@
-base_url='https://www.wjx.cn/vm/w3MNSsQ.aspx'   #问卷地址
+base_url='https://www.wjx.cn/vm/riVDodY.aspx'   #问卷地址
 path =  'chromedriver.exe'     # 驱动目录。这里的驱动版本是114，我测试用的浏览器版本是115。根据自己电脑上chrome浏览器的版本选择下载对应的版本驱动替换
 #下载地址：https://registry.npmmirror.com/binary.html?path=chromedriver/
 max_num=15      #题目数量
