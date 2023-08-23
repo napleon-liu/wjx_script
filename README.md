@@ -3,7 +3,7 @@
 >
 >模拟selenium浏览器打开问卷星网址，模拟点击选项，提交
 >
->仅支持**单选**和**多选**
+>仅支持**单选**和**多选**和**填空**
 >
 >支持选项权重
 
@@ -24,7 +24,7 @@
 >3.根据问卷内容，修改main.py中的auto_choose()里的choose_click(browser,type,num,questions,weights)
 >>browser默认；
 >>
->>type是题目类型，3为单选，4为多选；
+>>type是题目类型，2为填空，3为单选，4为多选；
 >>
 >>num为题目序号；
 >>

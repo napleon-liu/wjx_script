@@ -8,6 +8,7 @@ from selenium.webdriver.chrome.service import Service
 import numpy as np
 import config
 from selenium.webdriver import ActionChains
+from threading import Thread
 
 #base_url='https://www.wjx.cn/vm/Q2EFnd5.aspx'   #问卷地址
 #path =  'chromedriver.exe'     # 驱动目录
@@ -30,6 +31,8 @@ def create_browser():      #创建浏览器，返回一个browser对象
     return browser
 
 def choose_click(browser,type,num,questions,weights):
+    # //*[@id="div1"]
+    # //*[@id="div9"]
     questions= list(range(1, questions+1))
     if type==4:     #不重复选取多选
         t = random.randint(1, len(questions)-1)
@@ -43,36 +46,48 @@ def choose_click(browser,type,num,questions,weights):
         e.click()
     elif type== 2:
         browser.find_element('xpath', f'//*[@id="q{num}"]').send_keys("无")
+    elif type == 1:
+        results = np.random.choice(questions, size=3, replace=False,p=weights/np.sum(weights))
+        for i in results:
+            e=browser.find_element('xpath',f'//*[@id="div{num}"]/div[2]/div[{i}]')
+            e.click()
 def auto_choose():
     browser = create_browser()
     browser.execute_cdp_cmd('Page.addScriptToEvaluateOnNewDocument',
                             {'source': 'Object.defineProperty(navigator, "webdriver", {get: () => undefined})'})
     browser.get(base_url)
-    time.sleep(2)
+    # time.sleep(2)
     problems = [
-        [3, 1, 4, [3,4,4,3]],
-        [3, 2, 2, [5, 5]],
-        [3, 3, 3, [3,1,1]],
-        [3, 4, 4, [1,2,3,4]],
-        [3, 5, 2, [1,2]],
-        [3, 6, 3, [1,1,1]],
-        [4, 7, 6, [1,1,1,1,1,1]],
-        [4, 8, 5, [1,1,1,1,1]],
-        [3, 9, 2, [1,1]],
-        [3, 10, 2, [1,1]],
-        [4,11,4,[1,1,1,1]],
-        [4,12,7,[1,1,1,1,1,1,1]],
+        [3,1,2,[1,1]],
+        [3,2,4,[1,1,1,1]],
+        [3,3,4,[1,1,1,1]],
+        [3,4,4,[1,2,3,1]],
+        [3,5,4,[1,1,1,1]],
+        [3,6,4,[1,1,1,1]],
+        [3,7,2,[1,1]],
+        [4,8,6,[1,1,1,1,1,1]],
+        [3,9,4,[1,2,1,1]],
+        [3,10,4,[1,1,1,1]],
+        [3,11,4,[1,1,1,1]],
+        [3,12,2,[1,1]],
         [4,13,5,[1,1,1,1,1]],
-        [4,14,5,[1,1,1,1,1]],
-        [4,15,7,[1,1,1,1,1,1,1]],
+        [1,14,5,[1,1,1,1,1]],
+        [4,15,5,[1,1,1,1,1]],
+        [4,16,3,[1,1,1]],
+        [4,17,6,[1,1,1,1,1,1]],
+        [3,18,4,[1,1,1,1]],
+        [4,19,8,[1,1,1,1,1,1,1,1]]
     ]
     for p in problems:
-        choose_click(browser, p[0],p[1],p[2],p[3])
+        try:
+            choose_click(browser, p[0],p[1],p[2],p[3])
+        except Exception:
+            print(Exception)
         # time.sleep(2)
     # 提交按钮
     submit = browser.find_element('xpath', '//*[@id="ctlNext"]')
     submit.click()
-    time.sleep(1)
+    # time.sleep(100)
     try:
         comfirm=browser.find_element('xpath','//*[@id="layui-layer1"]/div[3]/a')
         comfirm.click()
@@ -98,11 +113,21 @@ def auto_choose():
 if __name__ == '__main__':
     for i in range(1,config.loop_time+1):
         try:
-            auto_choose()
-            print(f'已提交{i}次问卷')
+            # auto_choose()
+            # print(f'已提交{i}次问卷')
+            threads = []
+            loop = 10
+            for j in (0,loop):
+                t = Thread(target=auto_choose)
+                threads.append(t)
+            for t in threads:
+                t.start()
+            for t in threads:
+                t.join()
+            k = 10 * i
+            # print("已提交了{k}次问卷")
         except Exception as e:
             print(e)
-        # time.sleep(10)
 
 
 
